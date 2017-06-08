@@ -29,9 +29,10 @@ CREATE TABLE `t_question` (
   `description` text NOT NULL COMMENT '问题出现场景描述',
   `create_time` datetime NOT NULL COMMENT '创建时间',
   `update_time` datetime NOT NULL COMMENT '最后一次更新时间',
-  `user_id` int NOT NULL COMMENT '提问用户id',
+  `create_user_id` int NOT NULL COMMENT '提问用户id',
   `vote_up` int DEFAULT 0 COMMENT '被赞次数',
   `vote_down` int DEFAULT 0 COMMENT '被踩次数',
+  `language` int(1) DEFAULT 0 COMMENT '语言类型 0：英文，1：中文',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
@@ -42,12 +43,37 @@ CREATE TABLE `t_answer` (
   `answer` text NOT NULL COMMENT '回答的答案',
   `create_time` datetime NOT NULL COMMENT '创建时间',
   `update_time` datetime NOT NULL COMMENT '最后一次更新时间',
-  `user_id` int NOT NULL COMMENT '答题用户id',
+  `create_user_id` int NOT NULL COMMENT '答题用户id',
   `question_id` int NOT NULL COMMENT '问题id',
   `vote_up` int DEFAULT 0 COMMENT '被赞次数',
   `vote_down` int DEFAULT 0 COMMENT '被踩次数',
+  `language` int(1) DEFAULT 0 COMMENT '语言类型 0：英文，1：中文',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+-- tag
+DROP TABLE IF EXISTS `t_tag`;
+CREATE TABLE `t_tag` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '标签id',
+  `name` VARCHAR(50) NOT NULL COMMENT '标签名',
+  `create_time` datetime NOT NULL COMMENT '创建时间',
+  `update_time` datetime NOT NULL COMMENT '最后一次更新时间',
+  `create_user_id` int NOT NULL COMMENT '创建者id',
+  `description` text DEFAULT NULL COMMENT '标签描述',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+-- question tag mapper
+DROP TABLE IF EXISTS `t_question_tag_mapper`;
+CREATE TABLE `t_question_tag_mapper` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '问题和标签的映射id',
+  `question_id` int(11) NOT NULL COMMENT '问题id',
+  `answer_id` int(11) NOT NULL COMMENT '答案id',
+  `create_time` datetime NOT NULL COMMENT '创建时间',
+  `update_time` datetime NOT NULL COMMENT '最后一次更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
 
 
 
