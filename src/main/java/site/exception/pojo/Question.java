@@ -1,11 +1,15 @@
 package site.exception.pojo;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Question {
+public class Question implements Serializable {
+    private static final long serialVersionUID = 8480143826338161421L;
     private Integer id;
 
     private String title;
+
+    private String titleCh;
 
     private Date createTime;
 
@@ -20,6 +24,44 @@ public class Question {
     private Integer language;
 
     private String description;
+
+    private String descriptionCh;
+
+    private Integer originalId;
+
+	private String originalLink;
+
+	public String getOriginalLink() {
+		return originalLink;
+	}
+
+	public void setOriginalLink(String originalLink) {
+		this.originalLink = originalLink;
+	}
+
+	public String getTitleCh() {
+        return titleCh;
+    }
+
+    public void setTitleCh(String titleCh) {
+        this.titleCh = titleCh;
+    }
+
+    public String getDescriptionCh() {
+        return descriptionCh;
+    }
+
+    public void setDescriptionCh(String descriptionCh) {
+        this.descriptionCh = descriptionCh;
+    }
+
+    public Integer getOriginalId() {
+        return originalId;
+    }
+
+    public void setOriginalId(Integer originalId) {
+        this.originalId = originalId;
+    }
 
     public Integer getId() {
         return id;
