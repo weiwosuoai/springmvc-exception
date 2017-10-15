@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+	<context:component-scan base-package="site.exception.scheduler" />
+
+
+	<bean id="questionTitleTranslaterTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="questionTitleTranslaterDetail" />
+		<!--<property name="startDelay" value="1000" />-->
+		<!--<property name="repeatInterval" value="1800000" />-->
+		<property name="cronExpression">
+			<value>0 46 16 ? * *</value>
+		</property>
+	</bean>
+
+	<!-- For times when you just need to invoke a method on a specific object -->
+	<bean id="questionTitleTranslaterDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="questionTitleTranslaterScheduler" />
+		<property name="targetMethod" value="questionTitleTranslater" />
+	</bean>
+
+
+	<bean id="questionDesTranslaterTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="questionDesTranslaterDetail" />
+		<!--<property name="startDelay" value="1000" />-->
+		<!--<property name="repeatInterval" value="1800000" />-->
+        <property name="cronExpression">
+            <value>0 38 20 ? * *</value>
+        </property>
+	</bean>
+
+	<!-- For times when you just need to invoke a method on a specific object -->
+	<bean id="questionDesTranslaterDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="questionDesTranslaterScheduler" />
+		<property name="targetMethod" value="questionDesTranslater" />
+        <property name="concurrent" value="false" />
+    </bean>
+
+    <bean id="questionAnswerDesTranslaterTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="questionAnswerDesTranslaterDetail" />
+        <!--<property name="startDelay" value="1000" />-->
+        <!--<property name="repeatInterval" value="1800000" />-->
+        <property name="cronExpression">
+            <value>0 38 10 ? * *</value>
+        </property>
+    </bean>
+
+    <!-- For times when you just need to invoke a method on a specific object -->
+    <bean id="questionAnswerDesTranslaterDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="questionAnswerDesTranslaterScheduler" />
+        <property name="targetMethod" value="questionAnswerDesTranslater" />
+        <property name="concurrent" value="false" />
+    </bean>
+
+	<!-- Scheduler factory bean to glue together jobDetails and triggers to Configure Quartz Scheduler -->
+	<bean  class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="jobDetails">
+			<list>
+				<ref bean="questionTitleTranslaterDetail" />
+				<ref bean="questionDesTranslaterDetail" />
+				<ref bean="questionAnswerDesTranslaterDetail" />
+			</list>
+		</property>
+
+		<property name="triggers">
+			<list>
+				<!--问题标题翻译任务-->
+				<!--<ref bean="questionTitleTranslaterTrigger" />-->
+				<!--问题描述信息翻译任务-->
+				<!--<ref bean="questionDesTranslaterTrigger" />-->
+                <!--回答描述信息翻译任务-->
+				<!--<ref bean="questionAnswerDesTranslaterTrigger" />-->
+			</list>
+
+		</property>
+	</bean>
+
+</beans>
