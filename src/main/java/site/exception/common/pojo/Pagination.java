@@ -1,4 +1,4 @@
-package site.exception.common;
+package site.exception.common.pojo;
 
 import java.io.Serializable;
 import java.util.List;
