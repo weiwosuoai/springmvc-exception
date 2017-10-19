@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="site.exception.dao.TagMapper" >
+  <!--缓存-->
   <cache></cache>
   <resultMap id="BaseResultMap" type="site.exception.pojo.Tag" >
     <id column="id" property="id" jdbcType="INTEGER" />
@@ -8,15 +9,17 @@
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
     <result column="create_user_id" property="createUserId" jdbcType="INTEGER" />
+    <result column="spider_page_num" property="spiderPageNum" jdbcType="INTEGER" />
   </resultMap>
   <resultMap id="ResultMapWithBLOBs" type="site.exception.pojo.Tag" extends="BaseResultMap" >
     <result column="description" property="description" jdbcType="LONGVARCHAR" />
+    <result column="description_ch" property="descriptionCh" jdbcType="LONGVARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, name, create_time, update_time, create_user_id
+    id, name, create_time, update_time, create_user_id, spider_page_num
   </sql>
   <sql id="Blob_Column_List" >
-    description
+    description_ch
   </sql>
   <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
     select 
@@ -155,5 +158,11 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       create_user_id = #{createUserId,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <update id="updateByTagName" parameterType="site.exception.pojo.Tag" >
+    update t_tag
+    set spider_page_num = #{spiderPageNum}
+    where name = #{name}
   </update>
 </mapper>

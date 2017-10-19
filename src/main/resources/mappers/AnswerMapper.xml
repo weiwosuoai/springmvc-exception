@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="site.exception.dao.AnswerMapper" >
+  <resultMap id="BaseResultMap" type="site.exception.pojo.Answer" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="create_user_id" property="createUserId" jdbcType="INTEGER" />
+    <result column="question_id" property="questionId" jdbcType="INTEGER" />
+    <result column="vote_up" property="voteUp" jdbcType="INTEGER" />
+    <result column="vote_down" property="voteDown" jdbcType="INTEGER" />
+    <result column="language" property="language" jdbcType="INTEGER" />
+    <result column="original_id" property="originalId" jdbcType="INTEGER" />
+    <result column="is_accepted" property="isAccepted" jdbcType="INTEGER" />
+    <result column="vote_count" property="voteCount" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="VoResultMap" type="site.exception.pojo.vo.AnswerVo" extends="BaseResultMap">
+    <result column="description_ch" property="answerDesc.descriptionCh" jdbcType="LONGVARCHAR" />
+    <result column="description" property="answerDesc.description" jdbcType="LONGVARCHAR" />
+    <result column="ans_desc_id" property="answerDesc.id" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, create_time, update_time, create_user_id, question_id, vote_up, vote_down, language, 
+    original_id
+  </sql>
+  <sql id="Blob_Column_List" >
+    description
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from t_answer
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectDesEmpty" resultMap="VoResultMap">
+select
+    t1.id, t1.original_id, t2.description, t2.id as ans_desc_id
+    from t_answer t1 left join t_answer_desc t2 on (t1.id = t2.answer_id)
+    where t2.description is null or t2.description = ''
+  </select>
+
+  <select id="selectAnswerChEmpty" resultMap="VoResultMap">
+select t1.id AS ans_desc_id, t2.id, t1.description, t2.question_id from (
+select id, answer_id, description from t_answer_desc where (!ISNULL(description) and description != '')
+    and (ISNULL(description_ch) or description_ch = '?' or description_ch = '') order by id desc limit 0, 100) t1
+    left join t_answer t2 on (t1.answer_id = t2.id)
+  </select>
+
+  <select id="selectByQuestionId" resultMap="VoResultMap" parameterType="java.lang.Integer">
+select
+    t1.id, t1.is_accepted, t1.vote_count, t1.original_id
+    from t_answer t1
+    where t1.question_id = #{id} order by t1.vote_count desc
+  </select>
+
+
+    <select id="selectAnswerChEmpty2" resultMap="BaseResultMap">
+        select
+        id, description
+        from t_answer
+        where ISNULL(answer_ch) or answer_ch = '?' ORDER BY create_time DESC
+    </select>
+
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_answer
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="site.exception.pojo.Answer" useGeneratedKeys="true" keyProperty="id">
+    insert into t_answer (create_time, update_time,
+      create_user_id, question_id, vote_up, 
+      vote_down, language, original_id, is_accepted, vote_count)
+    values (NOW(), NOW(),
+      #{createUserId,jdbcType=INTEGER}, #{questionId,jdbcType=INTEGER}, #{voteUp,jdbcType=INTEGER}, 
+      #{voteDown,jdbcType=INTEGER}, #{language,jdbcType=INTEGER}, #{originalId,jdbcType=INTEGER}, 
+      #{isAccepted,jdbcType=INTEGER}, #{voteCount,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="site.exception.pojo.Answer" >
+    insert into t_answer
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="createUserId != null" >
+        create_user_id,
+      </if>
+      <if test="questionId != null" >
+        question_id,
+      </if>
+      <if test="voteUp != null" >
+        vote_up,
+      </if>
+      <if test="voteDown != null" >
+        vote_down,
+      </if>
+      <if test="language != null" >
+        language,
+      </if>
+      <if test="originalId != null" >
+        original_id,
+      </if>
+      <if test="description != null" >
+        description,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUserId != null" >
+        #{createUserId,jdbcType=INTEGER},
+      </if>
+      <if test="questionId != null" >
+        #{questionId,jdbcType=INTEGER},
+      </if>
+      <if test="voteUp != null" >
+        #{voteUp,jdbcType=INTEGER},
+      </if>
+      <if test="voteDown != null" >
+        #{voteDown,jdbcType=INTEGER},
+      </if>
+      <if test="language != null" >
+        #{language,jdbcType=INTEGER},
+      </if>
+      <if test="originalId != null" >
+        #{originalId,jdbcType=INTEGER},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="site.exception.pojo.Answer" >
+    update t_answer
+    <set >
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUserId != null" >
+        create_user_id = #{createUserId,jdbcType=INTEGER},
+      </if>
+      <if test="questionId != null" >
+        question_id = #{questionId,jdbcType=INTEGER},
+      </if>
+      <if test="voteUp != null" >
+        vote_up = #{voteUp,jdbcType=INTEGER},
+      </if>
+      <if test="voteDown != null" >
+        vote_down = #{voteDown,jdbcType=INTEGER},
+      </if>
+      <if test="language != null" >
+        language = #{language,jdbcType=INTEGER},
+      </if>
+      <if test="originalId != null" >
+        original_id = #{originalId,jdbcType=INTEGER},
+      </if>
+      <if test="description != null" >
+        description = #{description,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="descriptionCh != null" >
+        answer_ch = #{descriptionCh,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="site.exception.pojo.Answer" >
+    update t_answer
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      create_user_id = #{createUserId,jdbcType=INTEGER},
+      question_id = #{questionId,jdbcType=INTEGER},
+      vote_up = #{voteUp,jdbcType=INTEGER},
+      vote_down = #{voteDown,jdbcType=INTEGER},
+      language = #{language,jdbcType=INTEGER},
+      original_id = #{originalId,jdbcType=INTEGER},
+      description = #{description,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="site.exception.pojo.Answer" >
+    update t_answer
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      create_user_id = #{createUserId,jdbcType=INTEGER},
+      question_id = #{questionId,jdbcType=INTEGER},
+      vote_up = #{voteUp,jdbcType=INTEGER},
+      vote_down = #{voteDown,jdbcType=INTEGER},
+      language = #{language,jdbcType=INTEGER},
+      original_id = #{originalId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

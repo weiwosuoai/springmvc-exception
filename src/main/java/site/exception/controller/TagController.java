@@ -1,6 +1,5 @@
 package site.exception.controller;
 
-import com.github.pagehelper.PageInfo;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,14 +8,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import site.exception.pojo.vo.QuestionTagMapVo;
-import site.exception.pojo.vo.QuestionVo;
-import site.exception.service.IQuestionService;
-import site.exception.service.ITagService;
-import site.exception.utils.SolrJUtil;
-
-import java.util.List;
+import site.exception.service.QuestionService;
+import site.exception.service.TagService;
 
 /**
  * 标签页
@@ -26,9 +19,9 @@ import java.util.List;
 public class TagController {
 
 	@Autowired
-	private IQuestionService questionService;
+	private QuestionService questionService;
 	@Autowired
-	private ITagService tagService;
+	private TagService tagService;
 
 	private static final Log logger = LogFactory.getLog(TagController.class);
 
@@ -37,12 +30,12 @@ public class TagController {
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping(value = "/tag", method = RequestMethod.GET)
+	@RequestMapping(value = "/tags", method = RequestMethod.GET)
 	public String viewIndex(@RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
 							@RequestParam(value = "pageSize", defaultValue = "39") int pageSize,
 							Model model) {
 		model.addAttribute("pageInfo", tagService.findByPagination(pageNum, pageSize));
-		model.addAttribute("navbarRef", "tag");
+		model.addAttribute("navbarRef", "tags");
 		return "tag";
 	}
 
@@ -80,7 +73,7 @@ public class TagController {
 //	 */
 //	@ResponseBody
 //	@RequestMapping(value = "/index/hot_tags", produces = "application/json", method = RequestMethod.GET)
-//	public List<QuestionTagMapVo> hotTagsInfo(Model model) {
+//	public List<QuestionTagRelVo> hotTagsInfo(Model model) {
 //		return tagService.findHotTags();
 //	}
 //

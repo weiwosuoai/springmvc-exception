@@ -1,29 +1,20 @@
 package site.exception.pojo.vo;
 
 import site.exception.pojo.Answer;
+import site.exception.pojo.AnswerDescWithBLOBs;
 
 /**
  * Created by Allen on 2017/7/18.
  */
 public class AnswerVo extends Answer {
 
-	private String answerChHtml;
+	private AnswerDescWithBLOBsVo answerDesc;
 
-	private String answerHtml;
-
-	public String getAnswerChHtml() {
-		return answerChHtml;
+	public AnswerDescWithBLOBsVo getAnswerDesc() {
+		return answerDesc;
 	}
 
-	public void setAnswerChHtml(String answerChHtml) {
-		this.answerChHtml = answerChHtml;
-	}
-
-	public String getAnswerHtml() {
-		return answerHtml;
-	}
-
-	public void setAnswerHtml(String answerHtml) {
-		this.answerHtml = answerHtml;
+	public void setAnswerDesc(AnswerDescWithBLOBsVo answerDesc) {
+		this.answerDesc = answerDesc;
 	}
 }

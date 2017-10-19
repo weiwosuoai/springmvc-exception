@@ -20,18 +20,29 @@ public class Question implements Serializable {
     private Integer voteUp;
 
     private Integer voteDown;
+    private Integer viewNum;
 
     private Integer language;
-
-    private String description;
-
-    private String descriptionCh;
 
     private Integer originalId;
 
 	private String originalLink;
 
-	public String getOriginalLink() {
+    private Integer titleTransFinished;
+
+    private Integer answerTransFinished;
+
+    private Integer status;
+
+    public Integer getViewNum() {
+        return viewNum;
+    }
+
+    public void setViewNum(Integer viewNum) {
+        this.viewNum = viewNum;
+    }
+
+    public String getOriginalLink() {
 		return originalLink;
 	}
 
@@ -45,14 +56,6 @@ public class Question implements Serializable {
 
     public void setTitleCh(String titleCh) {
         this.titleCh = titleCh;
-    }
-
-    public String getDescriptionCh() {
-        return descriptionCh;
-    }
-
-    public void setDescriptionCh(String descriptionCh) {
-        this.descriptionCh = descriptionCh;
     }
 
     public Integer getOriginalId() {
@@ -127,11 +130,27 @@ public class Question implements Serializable {
         this.language = language;
     }
 
-    public String getDescription() {
-        return description;
+    public Integer getTitleTransFinished() {
+        return titleTransFinished;
     }
 
-    public void setDescription(String description) {
-        this.description = description == null ? null : description.trim();
+    public void setTitleTransFinished(Integer titleTransFinished) {
+        this.titleTransFinished = titleTransFinished;
+    }
+
+    public Integer getAnswerTransFinished() {
+        return answerTransFinished;
+    }
+
+    public void setAnswerTransFinished(Integer answerTransFinished) {
+        this.answerTransFinished = answerTransFinished;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 }

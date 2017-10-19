@@ -17,10 +17,19 @@ public class Tag implements Serializable {
 
     private String description;
 
-	/**
+    private Integer spiderPageNum;
+
+    /**
 	 * 中文描述
      */
     private String descriptionCh;
+    public Integer getSpiderPageNum() {
+        return spiderPageNum;
+    }
+
+    public void setSpiderPageNum(Integer spiderPageNum) {
+        this.spiderPageNum = spiderPageNum;
+    }
 
     public String getDescriptionCh() {
         return descriptionCh;

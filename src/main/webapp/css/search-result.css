@@ -1,0 +1,41 @@
+@CHARSET "UTF-8";
+
+.btn-to-submit-question {
+	margin-bottom: 20px;
+	padding: 12px 12px;
+	font-size: 16px;
+}
+
+.page-header {
+	margin-bottom: 0;
+}
+
+.question-list-item {
+	margin-bottom: 0;
+	border: none;
+	border-bottom: 1px solid #eee;
+	padding-left: 0;
+}
+
+.question-list-item a {
+	font-size: 16px;
+}
+
+.pagination {
+	margin-bottom: 40px;
+}
+
+.list-group-item-no-border {
+	border: 0;
+}
+
+em {
+	font-style: normal;
+	color: #EB3C0F;
+}
+
+.summary {
+    font-size: 13px;
+    margin-top: 5px;
+}
+

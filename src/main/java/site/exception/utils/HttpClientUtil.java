@@ -15,6 +15,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.conn.params.ConnManagerParams;
 import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
@@ -23,6 +24,8 @@ import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 
 /**
  * Created by Allen on 2017/6/12.
@@ -31,8 +34,14 @@ public class HttpClientUtil {
 
 	protected static Log log = LogFactory.getLog(HttpClientUtil.class);
 	protected static HttpClient httpclient = null;
+	/**
+	 * 连接池最大链接个数
+	 */
 	protected static int maxTotal = 200;
-	protected static int maxPerRoute = 20;
+	/**
+	 * 单个路由链接的最大数
+	 */
+	protected static int maxPerRoute = 100;
 	protected static String userAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.7 (KHTML, like Gecko) Chrome/16.0.912.77 Safari/535.7";
 
 	static {
@@ -46,7 +55,16 @@ public class HttpClientUtil {
 			ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(reg);
 			cm.setMaxTotal(maxTotal);
 			cm.setDefaultMaxPerRoute(maxPerRoute);
-			httpclient = new DefaultHttpClient(cm);
+
+			HttpParams params =new BasicHttpParams();
+			// 超时设置
+			/* 从连接池中取连接的超时时间 */
+			ConnManagerParams.setTimeout(params, 1000);
+            /* 连接超时 */
+			HttpConnectionParams.setConnectionTimeout(params, 5000);
+            /* 请求超时 */
+			HttpConnectionParams.setSoTimeout(params, 5000);
+			httpclient = new DefaultHttpClient(cm, params);
 		}
 	}
 

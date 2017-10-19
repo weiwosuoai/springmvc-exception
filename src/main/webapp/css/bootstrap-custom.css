@@ -97,3 +97,13 @@ blockquote {
     background-color: #EB3C0F;
     border-color: #EB3C0F;
 }
+
+.nav-tabs>li>a {
+    border-radius: 0;
+}
+
+.alert {
+    border-radius: 2px;
+}
+
+

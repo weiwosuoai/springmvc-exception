@@ -1,17 +1,30 @@
 package site.exception.dao;
 
-import site.exception.pojo.QuestionTagMap;
+import site.exception.pojo.QuestionTagRel;
+import site.exception.pojo.vo.QuestionTagRelVo;
+
+import java.util.List;
 
 public interface QuestionTagMapper {
     int deleteByPrimaryKey(Integer id);
 
-    int insert(QuestionTagMap record);
+    int insert(QuestionTagRel record);
 
-    int insertSelective(QuestionTagMap record);
+    int insertSelective(QuestionTagRel record);
 
-    QuestionTagMap selectByPrimaryKey(Integer id);
+    QuestionTagRel selectByPrimaryKey(Integer id);
 
-    int updateByPrimaryKeySelective(QuestionTagMap record);
+    QuestionTagRel selectByQuestionIdAndTagId(QuestionTagRel record);
 
-    int updateByPrimaryKey(QuestionTagMap record);
+    List<QuestionTagRelVo> selectTagsByNumDesc();
+
+    List<QuestionTagRelVo> selectTagsByPrimaryKey(Integer id);
+
+    List<QuestionTagRelVo> selectHotTags();
+
+    int updateByPrimaryKeySelective(QuestionTagRel record);
+
+    int updateByPrimaryKey(QuestionTagRel record);
+
+
 }

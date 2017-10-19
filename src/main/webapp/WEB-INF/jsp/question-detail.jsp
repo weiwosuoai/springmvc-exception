@@ -37,7 +37,13 @@
 
     <!-- 标题 -->
     <div class="page-header">
-        <h1>${questionVo.titleCh}</h1><span class="label label-primary margin-right5px">机器翻译</span>
+        <h1>${questionVo.titleCh}</h1>
+        <c:if test="${questionVo.status == 0}">
+            <span class="label label-primary margin-right5px">机器翻译</span>
+        </c:if>
+        <c:if test="${questionVo.status == 1}">
+            <span class="label label-success margin-right5px">人工校译</span>
+        </c:if>
         <a href="${questionVo.originalLink}" target="_blank">[原文链接]</a>
             &nbsp;&nbsp;&nbsp;${questionVo.voteUp} <span class="color-grey">次点赞</span>
         &nbsp;&nbsp;&nbsp;<span class="color-grey">浏览</span> ${questionVo.viewNum} <span class="color-grey">次</span>
@@ -61,11 +67,9 @@
             </c:if>
 
             <%--操作（编辑）--%>
-            <c:if test="${sessionScope.userid != null}">
-                <div class="margin-top20px">
-                    <a href="/questions/${questionVo.id}/update" class="color-grey">编辑</a>
-                </div>
-            </c:if>
+            <div class="margin-top15px">
+                <a href="/questions/${questionVo.id}/update" class="color-grey desc-operate">编辑</a>
+            </div>
 
             <!-- 解决方案 -->
             <div class="page-header description-page-header" style="margin-top: 40px;">
@@ -97,12 +101,10 @@
                                     </c:otherwise>
                                 </c:choose>
 
-                                    <%--操作（编辑）--%>
-                                <c:if test="${sessionScope.userid != null}">
-                                    <div class="margin-top20px">
-                                        <a href="#" style="color: #9199a1;">编辑</a>
-                                    </div>
-                                </c:if>
+                                <%--操作（编辑）--%>
+                                <div class="margin-top15px">
+                                    <a href="/answers/${answer.answerDesc.id}/update" class="color-grey desc-operate">编辑</a>
+                                </div>
                             </div>
                         </div>
                     </c:when>
@@ -128,11 +130,9 @@
                                 </c:choose>
 
                                 <%--操作（编辑）--%>
-                                <c:if test="${sessionScope.userid != null}">
-                                    <div class="margin-top20px">
-                                        <a href="#" style="color: #9199a1;">编辑</a>
-                                    </div>
-                                </c:if>
+                                <div class="margin-top15px">
+                                    <a href="/answers/${answer.answerDesc.id}/update" class="color-grey desc-operate">编辑</a>
+                                </div>
                             </div>
                         </div>
                     </c:otherwise>

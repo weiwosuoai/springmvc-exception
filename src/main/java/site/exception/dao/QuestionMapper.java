@@ -1,5 +1,6 @@
 package site.exception.dao;
 
+import org.apache.ibatis.annotations.Param;
 import site.exception.pojo.Question;
 import site.exception.pojo.vo.QuestionVo;
 
@@ -18,6 +19,7 @@ public interface QuestionMapper {
 
     QuestionVo selectDetailById(Integer id);
 
+    List<Question> selectAll();
     List<QuestionVo> selectHotQuestions();
 
     List<Question> selectDescriptionEmpty();
@@ -32,6 +34,9 @@ public interface QuestionMapper {
     List<Question> selectDesNotEmptyAndDesChEmpty2();
 
     int updateByPrimaryKeySelective(Question record);
+
+    int updateTitleChByPrimaryKey(@Param("titleCh") String titleCh, @Param("id") Integer id);
+    int updateStatusByPrimaryKey(@Param("status") Integer status, @Param("id") Integer id);
 
     int updateByPrimaryKeyWithBLOBs(Question record);
 

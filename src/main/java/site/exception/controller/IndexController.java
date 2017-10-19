@@ -3,7 +3,6 @@ package site.exception.controller;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,45 +10,44 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import site.exception.pojo.Question;
-import site.exception.pojo.vo.QuestionTagMapVo;
-import site.exception.service.IQuestionService;
-import site.exception.service.ITagService;
+import site.exception.pojo.vo.QuestionTagRelVo;
+import site.exception.service.QuestionService;
+import site.exception.service.TagService;
 import site.exception.utils.SolrJUtil;
 import site.exception.pojo.vo.QuestionVo;
 
 import java.util.List;
 
 /**
- * 首页
+ * 首页 controller
  * Created by Allen on 2017/6/26.
  */
 @Controller
 public class IndexController {
 
 	@Autowired
-	private IQuestionService questionService;
+	private QuestionService questionService;
 	@Autowired
-	private ITagService tagService;
+	private TagService tagService;
 
 	private static final Log logger = LogFactory.getLog(IndexController.class);
 
 	/**
-	 * 首页信息
+	 * 首页
 	 * @param model
 	 * @return
 	 */
 	@RequestMapping(value = "/index", method = RequestMethod.GET)
-	public String viewIndex(@RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
+	public String showIndex(@RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
 							@RequestParam(value = "pageSize", defaultValue = "20") int pageSize,
 							Model model) {
 		model.addAttribute("pageInfo", questionService.findByPagination(pageNum, pageSize));
-		model.addAttribute("navbarRef", "question");
+		model.addAttribute("navbarRef", "questions");
 		return "index";
 	}
 
 	/**
-	 * 首页信息
+	 * 首页搜索
 	 * @param model
 	 * @return
 	 */
@@ -71,7 +69,7 @@ public class IndexController {
 		pageInfo.setPages(pages);
 		model.addAttribute("pageInfo", pageInfo);
 		model.addAttribute("q", q);
-		model.addAttribute("navbarRef", "question");
+		model.addAttribute("navbarRef", "questions");
 		return "search-result";
 	}
 
@@ -82,8 +80,8 @@ public class IndexController {
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/index/hot_tags", produces = "application/json", method = RequestMethod.GET)
-	public List<QuestionTagMapVo> hotTagsInfo(Model model) {
+	@RequestMapping(value = "/index/tags/hot", produces = "application/json", method = RequestMethod.GET)
+	public List<QuestionTagRelVo> getHotTags(Model model) {
 		return tagService.findHotTags();
 	}
 
@@ -94,9 +92,10 @@ public class IndexController {
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/index/hot_questions", produces = "application/json", method = RequestMethod.GET)
-	public List<QuestionVo> hotQuestionsInfo(Model model) {
+	@RequestMapping(value = "/index/questions/hot", produces = "application/json", method = RequestMethod.GET)
+	public List<QuestionVo> getHotQuestions(Model model) {
 		return questionService.findHotQuestions();
 	}
+
 
 }

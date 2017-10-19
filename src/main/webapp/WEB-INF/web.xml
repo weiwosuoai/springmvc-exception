@@ -23,20 +23,28 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
-
     <listener>
         <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
     </listener>
 
+    <!-- 加载 spring 容器 -->
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>classpath:applicationContext*.xml</param-value>
+    </context-param>
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
+
+    <!-- 日志 logback -->
+    <listener>
+        <listener-class>ch.qos.logback.ext.spring.web.LogbackConfigListener</listener-class>
+    </listener>
     <context-param>
-        <param-name>contextConfigLocation</param-name>
-        <param-value>
-            classpath:applicationContext.xml
-        </param-value>
+        <param-name>logbackConfigLocation</param-name>
+        <param-value>classpath:logback.xml</param-value>
     </context-param>
+
 
     <servlet>
         <servlet-name>dispatcher</servlet-name>
@@ -53,5 +61,6 @@
         <servlet-name>dispatcher</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
+
 </web-app>
 

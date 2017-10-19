@@ -4,17 +4,21 @@
     <resultMap id="BaseResultMap" type="site.exception.pojo.Question">
         <id column="id" property="id" jdbcType="INTEGER"/>
         <result column="title" property="title" jdbcType="VARCHAR"/>
+        <result column="title_ch" property="titleCh" jdbcType="VARCHAR"/>
         <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
         <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
         <result column="create_user_id" property="createUserId" jdbcType="INTEGER"/>
         <result column="vote_up" property="voteUp" jdbcType="INTEGER"/>
+        <result column="view_num" property="viewNum" jdbcType="INTEGER"/>
         <result column="vote_down" property="voteDown" jdbcType="INTEGER"/>
         <result column="language" property="language" jdbcType="INTEGER"/>
         <result column="original_id" property="originalId" jdbcType="INTEGER"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="original_link" property="originalLink" jdbcType="VARCHAR"/>
     </resultMap>
-    <resultMap id="ResultMapWithBLOBs" type="site.exception.pojo.Question" extends="BaseResultMap">
-        <result column="description" property="description" jdbcType="LONGVARCHAR"/>
-        <result column="description_ch" property="descriptionCh" jdbcType="LONGVARCHAR"/>
+    <resultMap id="ResultMapVo" type="site.exception.pojo.vo.QuestionVo" extends="BaseResultMap">
+        <result column="answer_num" property="answerNum" jdbcType="INTEGER"/>
+        <result column="has_accepte_answer" property="hasAccepteAnswer" jdbcType="INTEGER"/>
     </resultMap>
     <sql id="Base_Column_List">
     id, title, create_time, update_time, create_user_id, vote_up, vote_down, language
@@ -22,52 +26,87 @@
     <sql id="Blob_Column_List">
     description, description_ch
   </sql>
-    <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer">
+    <select id="selectByPrimaryKey" resultMap="ResultMapVo" parameterType="java.lang.Integer">
         select
-        <include refid="Base_Column_List"/>
-        ,
-        <include refid="Blob_Column_List"/>
+        id, original_link, title_ch, vote_up, view_num, status
         from t_question
         where id = #{id,jdbcType=INTEGER}
     </select>
 
-    <select id="selectByOriginalId" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer">
+    <select id="selectByOriginalId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
     select
     id
     from t_question
-    where original_id = #{id,jdbcType=INTEGER}
+    where original_id = #{id}
   </select>
 
-    <select id="selectDescriptionEmpty" resultMap="ResultMapWithBLOBs">
+    <select id="selectDetailById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        id
+        from t_question
+        where original_id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectAll" resultMap="ResultMapVo">
+        select id from t_question where id = 63481
+    </select>
+
+    <select id="selectHotQuestions" resultMap="ResultMapVo">
+        select t1.id, t1.title_ch,t1.view_num ,count(*) answer_num,SUM(t2.is_accepted) has_accepte_answer from
+        (select id, title_ch,view_num from t_question order by view_num desc limit 15) t1
+        left join t_answer t2 on (t1.id = t2.question_id) GROUP BY t2.question_id ORDER BY t1.view_num desc
+    </select>
+
+    <select id="selectDescriptionEmpty" resultMap="BaseResultMap">
     select
     id, original_id
     from t_question
-    where description = '?'
+    where description = ''
   </select>
 
-    <select id="selectDesNotEmptyAndDesChEmpty" resultMap="ResultMapWithBLOBs">
-        select
-        id, description
-        from t_question
-        where !ISNULL(description) and description_ch = '?'
+    <select id="selectDesNotEmptyAndDesChEmpty" resultMap="BaseResultMap">
+select t2.id, t2.original_link from
+(select question_id
+from t_question_desc
+where description is not null and description != '' and (description_ch is null or description_ch = '') limit 0, 100) t1
+left join t_question t2 on (t1.question_id = t2.id)
     </select>
 
-    <select id="selectDesNotEmptyAndDesChEmpty2" resultMap="ResultMapWithBLOBs">
+    <select id="selectDesNotEmptyAndDesChEmpty2" resultMap="BaseResultMap">
         select
         id, title
         from t_question
-        where !ISNULL(title) and (ISNULL(title_ch) or title_ch = '?')
+        where (!ISNULL(title) and title != '') and (ISNULL(title_ch) or title_ch = '?' or title_ch = '')
     </select>
+
+    <select id="selectNoAnswer" resultMap="BaseResultMap">
+        SELECT t1.id, t1.original_link from t_question t1
+        LEFT JOIN t_answer t2
+        ON t1.id = t2.question_id
+        WHERE t2.question_id IS NULL
+    </select>
+
+    <select id="selectBeAnswered" resultMap="ResultMapVo">
+select id, title_ch, vote_up from t_question where title_ch is not null
+AND title_trans_finished = 1 and answer_trans_finished = 1 order by vote_up DESC
+    </select>
+
+    <select id="selectTaggedQuestionByTagId" resultMap="ResultMapVo" parameterType="java.lang.Integer">
+select t1.id, t1.title_ch, t1.vote_up, t1.status from
+(select id, title_ch, vote_up, status from t_question where title_ch is not null and title_trans_finished = 1 and answer_trans_finished = 1 order by vote_up DESC ) t1
+left join t_question_tag_rel t2 on (t1.id = t2.question_id) where t2.tag_id = #{id} order by vote_up desc
+    </select>
+
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_question
     where id = #{id,jdbcType=INTEGER}
   </delete>
-    <insert id="insert" parameterType="site.exception.vo.QuestionVo" useGeneratedKeys="true" keyProperty="id">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="site.exception.pojo.vo.QuestionVo" >
     insert into t_question (title, create_time,
       update_time, create_user_id, vote_up, 
-      vote_down, language, description,original_id,original_link
-      )
+      vote_down, language, description,original_id,original_link)
     values (#{title,jdbcType=VARCHAR}, NOW(),
       NOW(), #{createUserId,jdbcType=INTEGER}, #{voteUp,jdbcType=INTEGER},
       #{voteDown,jdbcType=INTEGER}, #{language,jdbcType=INTEGER}, #{description,jdbcType=LONGVARCHAR},
@@ -162,15 +201,26 @@
             <if test="language != null">
                 language = #{language,jdbcType=INTEGER},
             </if>
-            <if test="description != null">
-                description = #{description,jdbcType=LONGVARCHAR},
+            <if test="titleTransFinished != null">
+                title_trans_finished = #{titleTransFinished,jdbcType=INTEGER},
             </if>
-            <if test="descriptionCh != null">
-                description_ch = #{descriptionCh,jdbcType=LONGVARCHAR},
+            <if test="answerTransFinished != null">
+                answer_trans_finished = #{answerTransFinished,jdbcType=INTEGER},
             </if>
         </set>
         where id = #{id,jdbcType=INTEGER}
     </update>
+    <update id="updateTitleChByPrimaryKey" parameterType="map">
+        update t_question set title_ch = #{titleCh}
+        where id = #{id}
+    </update>
+
+
+    <update id="updateStatusByPrimaryKey" parameterType="map">
+        update t_question set status = #{status}
+        where id = #{id}
+    </update>
+
     <update id="updateByPrimaryKeyWithBLOBs" parameterType="site.exception.pojo.Question">
     update t_question
     set title = #{title,jdbcType=VARCHAR},
@@ -194,4 +244,12 @@
       language = #{language,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+    <update id="updateViewNumIncrement" parameterType="java.lang.Integer">
+        update t_question
+        set view_num = view_num + 1
+        where id = #{id,jdbcType=INTEGER}
+</update>
+
+
 </mapper>

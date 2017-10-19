@@ -1,34 +1,72 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="site.exception.dao.QuestionTagMapper" >
-  <resultMap id="BaseResultMap" type="site.exception.pojo.QuestionTagMap" >
+  <resultMap id="BaseResultMap" type="site.exception.pojo.QuestionTagRel" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="question_id" property="questionId" jdbcType="INTEGER" />
     <result column="tag_id" property="tagId" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
   </resultMap>
+  <resultMap id="ResultMapVo" type="site.exception.pojo.vo.QuestionTagRelVo" extends="BaseResultMap">
+    <result column="name" property="tag.name" jdbcType="VARCHAR" />
+    <result column="num" property="questionNum" jdbcType="INTEGER"/>
+    <result column="description_ch" property="tag.descriptionCh" jdbcType="VARCHAR"/>
+    <result column="tag_id" property="tag.id" jdbcType="INTEGER"/>
+  </resultMap>
   <sql id="Base_Column_List" >
     id, question_id, answer_id, create_time, update_time
   </sql>
+
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    from t_question_tag_map
+    from t_question_tag_rel
     where id = #{id,jdbcType=INTEGER}
   </select>
+
+
+
+
+
+  <select id="selectHotTags" resultMap="ResultMapVo">
+    select t1.*, t2.name FROM
+      (select id, tag_id, COUNT(1) as num from t_question_tag_rel GROUP BY tag_id ORDER BY num DESC LIMIT 10) t1
+      left join t_tag t2 on (t1.tag_id = t2.id)
+  </select>
+
+
+
+  <select id="selectTagsByPrimaryKey" resultMap="ResultMapVo" parameterType="java.lang.Integer" >
+    select tag_id from t_question_tag_rel
+    where question_id = #{id}
+  </select>
+
+  <select id="selectTagsByNumDesc" resultMap="ResultMapVo">
+    select t1.*, t2.id as tag_id,t2.name, t2.description_ch FROM
+      (select id, tag_id, COUNT(*) as num from t_question_tag_rel GROUP BY tag_id ORDER BY num DESC) t1
+      left join t_tag t2 on (t1.tag_id = t2.id)
+  </select>
+
+
+
+  <select id="selectByQuestionIdAndTagId" resultType="site.exception.pojo.QuestionTagRel">
+    select id from t_question_tag_rel where question_id = #{questionId} and tag_id = #{tagId}
+  </select>
+
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from t_question_tag_map
+    delete from t_question_tag_rel
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="site.exception.pojo.QuestionTagMap" >
-    insert into t_question_tag_map (question_id, tag_id,
+  <insert id="insert" parameterType="site.exception.pojo.QuestionTagRel" >
+    insert into t_question_tag_rel (question_id, tag_id,
       create_time, update_time)
     values (#{questionId,jdbcType=INTEGER}, #{tagId,jdbcType=INTEGER},
       NOW(), NOW())
   </insert>
-  <insert id="insertSelective" parameterType="site.exception.pojo.QuestionTagMap" >
-    insert into t_question_tag_map
+  <insert id="insertSelective" parameterType="site.exception.pojo.QuestionTagRel" >
+    insert into t_question_tag_rel
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         id,
@@ -64,8 +102,8 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="site.exception.pojo.QuestionTagMap" >
-    update t_question_tag_map
+  <update id="updateByPrimaryKeySelective" parameterType="site.exception.pojo.QuestionTagRel" >
+    update t_question_tag_rel
     <set >
       <if test="questionId != null" >
         question_id = #{questionId,jdbcType=INTEGER},
@@ -82,8 +120,8 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="site.exception.pojo.QuestionTagMap" >
-    update t_question_tag_map
+  <update id="updateByPrimaryKey" parameterType="site.exception.pojo.QuestionTagRel" >
+    update t_question_tag_rel
     set question_id = #{questionId,jdbcType=INTEGER},
       answer_id = #{answerId,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="site.exception.dao.QuestionDescMapper" >
+  <resultMap id="BaseResultMap" type="site.exception.pojo.QuestionDesc" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="question_id" property="questionId" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="site.exception.pojo.vo.QuestionDescWithBLOBsVo" extends="BaseResultMap" >
+    <result column="description" property="description" jdbcType="LONGVARCHAR" />
+    <result column="description_ch" property="descriptionCh" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, question_id, create_time, update_time
+  </sql>
+  <sql id="Blob_Column_List" >
+    description, description_ch
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from t_question_desc
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectByQuestionId" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from t_question_desc
+    where question_id = #{questionId,jdbcType=INTEGER} order
+  </select>
+
+  <select id="selectLatestByQuestionId" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select description_ch
+    from t_question_desc
+    where question_id = #{questionId,jdbcType=INTEGER} order by create_time desc limit 1
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_question_desc
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="site.exception.pojo.QuestionDescWithBLOBs" >
+    insert into t_question_desc (question_id, create_time,
+      update_time, description, description_ch, create_user_id
+      )
+    values (#{questionId,jdbcType=INTEGER}, NOW(),
+      NOW(), #{description,jdbcType=LONGVARCHAR}, #{descriptionCh,jdbcType=LONGVARCHAR},#{createUserId,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="site.exception.pojo.QuestionDescWithBLOBs" >
+    insert into t_question_desc
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="questionId != null" >
+        question_id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="description != null" >
+        description,
+      </if>
+      <if test="descriptionCh != null" >
+        description_ch,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="questionId != null" >
+        #{questionId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="descriptionCh != null" >
+        #{descriptionCh,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="site.exception.pojo.QuestionDescWithBLOBs" >
+    update t_question_desc
+    <set >
+      <if test="questionId != null" >
+        question_id = #{questionId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="description != null" >
+        description = #{description,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="descriptionCh != null" >
+        description_ch = #{descriptionCh,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="site.exception.pojo.QuestionDescWithBLOBs" >
+    update t_question_desc
+    set question_id = #{questionId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      description = #{description,jdbcType=LONGVARCHAR},
+      description_ch = #{descriptionCh,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="site.exception.pojo.QuestionDesc" >
+    update t_question_desc
+    set question_id = #{questionId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <update id="updateDescriptionChByQuestionId" parameterType="map" >
+    update t_question_desc
+    set description_ch = #{descriptionCh}
+    where question_id = #{questionId}
+  </update>
+</mapper>

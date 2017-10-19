@@ -23,21 +23,9 @@ public class Answer implements Serializable {
 
     private Integer originalId;
 
-    private String answer;
-
-    private String answerCh;
-
     private Integer isAccepted;
 
     private Integer voteCount;
-
-    public String getAnswerCh() {
-        return answerCh;
-    }
-
-    public void setAnswerCh(String answerCh) {
-        this.answerCh = answerCh;
-    }
 
     public Integer getVoteCount() {
         return voteCount;
@@ -125,13 +113,5 @@ public class Answer implements Serializable {
 
     public void setOriginalId(Integer originalId) {
         this.originalId = originalId;
-    }
-
-    public String getAnswer() {
-        return answer;
-    }
-
-    public void setAnswer(String answer) {
-        this.answer = answer == null ? null : answer.trim();
     }
 }

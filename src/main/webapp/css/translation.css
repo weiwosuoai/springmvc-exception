@@ -1,0 +1,10 @@
+@CHARSET "UTF-8";
+
+.wmd-button > span {
+    background-image: url('../images/wmd-buttons.svg?v=063c0288e422');
+    background-repeat: no-repeat;
+    background-position: 0px 0px;
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+}
