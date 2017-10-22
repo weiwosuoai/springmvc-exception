@@ -32,7 +32,7 @@
     ,
     <include refid="Blob_Column_List" />
     from t_question_desc
-    where question_id = #{questionId,jdbcType=INTEGER} order
+    where question_id = #{questionId,jdbcType=INTEGER}
   </select>
 
   <select id="selectLatestByQuestionId" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >

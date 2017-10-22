@@ -1,13 +1,18 @@
 
 import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.SolrRequest;
 import org.apache.solr.client.solrj.SolrServer;
+import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
+import org.apache.solr.common.SolrInputDocument;
+import org.apache.solr.common.util.NamedList;
 import org.junit.Test;
 import org.omg.CORBA.Object;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -71,6 +76,40 @@ public class SolrJTest {
 				System.out.println(descriptionChList.get(0));
 			}
 		}
-
 	}
+
+	/**
+	 * 向 solr 中添加索引
+	 * @throws Exception
+	 */
+	@Test
+	public void addDocument() throws Exception {
+		SolrServer solrServer = new HttpSolrServer("http://116.62.170.57:8080/solr/collection1");
+		// 创建一个文档对象 SolrInputDocument
+		SolrInputDocument document = new SolrInputDocument();
+		document.addField("id", "id2");
+		document.addField("title_ch", "title_ch01");
+		document.addField("description_ch", "description_ch01");
+
+		// 写入索引库
+		solrServer.add(document);
+		// 提交
+		solrServer.commit();
+	}
+
+	/**
+	 * 删除索引
+	 * @throws Exception
+	 */
+	@Test
+	public void deleteDocument() throws Exception {
+		SolrServer solrServer = new HttpSolrServer("http://116.62.170.57:8080/solr/collection1");
+		// 删除文档
+//		solrServer.deleteById("id1");
+		solrServer.deleteByQuery("*:*");
+		// 提交
+		solrServer.commit();
+	}
+
+
 }

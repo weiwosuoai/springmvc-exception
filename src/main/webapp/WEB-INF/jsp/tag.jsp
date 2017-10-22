@@ -108,7 +108,7 @@
         },
         onPageClick: function (pageNum, evt) {
             // some code
-            location.href = "/tag?pageNum=" + pageNum;
+            location.href = "/tags?pageNum=" + pageNum;
         }
     });
 

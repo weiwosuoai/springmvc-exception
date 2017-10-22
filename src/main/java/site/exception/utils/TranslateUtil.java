@@ -97,13 +97,7 @@ public class TranslateUtil {
 					continue;
 				}
 
-				// 一些特殊的行导致连接超时（例如以 .java .properties 结尾的行)
-				line = line.trim();
-				if (line.endsWith("java") || line.endsWith("properties")
-						|| line.endsWith("com") || line.endsWith("xml")) {
-					sb.append(line + "\r\n");
-					continue;
-				}
+
 
 				// code
 				if (line.contains("`")) {
@@ -136,14 +130,23 @@ public class TranslateUtil {
 //				throw new RuntimeException(" *** 翻译失败 nullpointerexception ***, 错误行： " + line);
 //			}
 			catch (Exception e) {
-				// 允许错一行
-				if (transErrorNum < 1) {
+				// 一些特殊的行导致连接超时（例如以 .java .properties 结尾的行)
+				line = line.trim();
+				if (line.contains("java") || line.contains("properties")
+						|| line.contains("com") || line.contains("xml")) {
 					sb.append(line + "\r\n");
-					transErrorNum += 1;
 				} else {
-					e.printStackTrace();
-					throw new RuntimeException(" *** 多次翻译失败 ***, 错误行：" + line);
+					// 允许错一行
+					if (transErrorNum < 1) {
+						sb.append(line + "\r\n");
+						transErrorNum += 1;
+
+						e.printStackTrace();
+						throw new RuntimeException(" *** 多次翻译失败 ***, 错误行：" + line);
+					}
 				}
+
+
 
 			}
 

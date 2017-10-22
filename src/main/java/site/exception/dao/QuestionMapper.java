@@ -25,6 +25,7 @@ public interface QuestionMapper {
     List<Question> selectDescriptionEmpty();
 
     List<QuestionVo> selectBeAnswered();
+    List<QuestionVo> selectBeAnsweredWithDesc();
     List<QuestionVo> selectTaggedQuestionByTagId(Integer id);
 
     List<Question> selectNoAnswer();

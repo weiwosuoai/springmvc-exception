@@ -19,6 +19,7 @@
     <resultMap id="ResultMapVo" type="site.exception.pojo.vo.QuestionVo" extends="BaseResultMap">
         <result column="answer_num" property="answerNum" jdbcType="INTEGER"/>
         <result column="has_accepte_answer" property="hasAccepteAnswer" jdbcType="INTEGER"/>
+        <result column="description_ch" property="questionDesc.descriptionCh" jdbcType="LONGVARCHAR"/>
     </resultMap>
     <sql id="Base_Column_List">
     id, title, create_time, update_time, create_user_id, vote_up, vote_down, language
@@ -48,7 +49,7 @@
     </select>
 
     <select id="selectAll" resultMap="ResultMapVo">
-        select id from t_question where id = 63481
+        select id from t_question
     </select>
 
     <select id="selectHotQuestions" resultMap="ResultMapVo">
@@ -89,6 +90,12 @@ left join t_question t2 on (t1.question_id = t2.id)
     <select id="selectBeAnswered" resultMap="ResultMapVo">
 select id, title_ch, vote_up from t_question where title_ch is not null
 AND title_trans_finished = 1 and answer_trans_finished = 1 order by vote_up DESC
+    </select>
+
+    <select id="selectBeAnsweredWithDesc" resultMap="ResultMapVo">
+         select t1.*, t2.description_ch from (select id, title_ch from t_question where title_ch is not null
+AND title_trans_finished = 1 and answer_trans_finished = 1) t1
+left join t_question_desc t2 on (t1.id = t2.question_id)
     </select>
 
     <select id="selectTaggedQuestionByTagId" resultMap="ResultMapVo" parameterType="java.lang.Integer">

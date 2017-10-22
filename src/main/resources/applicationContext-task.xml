@@ -41,8 +41,6 @@
 
     <bean id="questionAnswerDesTranslaterTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
         <property name="jobDetail" ref="questionAnswerDesTranslaterDetail" />
-        <!--<property name="startDelay" value="1000" />-->
-        <!--<property name="repeatInterval" value="1800000" />-->
         <property name="cronExpression">
             <value>0 38 10 ? * *</value>
         </property>
@@ -55,6 +53,20 @@
         <property name="concurrent" value="false" />
     </bean>
 
+	<bean id="importAllQuestion2Solr" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="importAllQuestion2SolrDetail" />
+		<property name="cronExpression">
+			<value>0 4 22 ? * *</value>
+		</property>
+	</bean>
+
+	<!-- For times when you just need to invoke a method on a specific object -->
+	<bean id="importAllQuestion2SolrDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="searchServiceImpl" />
+		<property name="targetMethod" value="importAllQuestion" />
+		<property name="concurrent" value="false" />
+	</bean>
+
 	<!-- Scheduler factory bean to glue together jobDetails and triggers to Configure Quartz Scheduler -->
 	<bean  class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="jobDetails">
@@ -62,6 +74,7 @@
 				<ref bean="questionTitleTranslaterDetail" />
 				<ref bean="questionDesTranslaterDetail" />
 				<ref bean="questionAnswerDesTranslaterDetail" />
+				<ref bean="importAllQuestion2SolrDetail" />
 			</list>
 		</property>
 
@@ -73,6 +86,9 @@
 				<!--<ref bean="questionDesTranslaterTrigger" />-->
                 <!--回答描述信息翻译任务-->
 				<!--<ref bean="questionAnswerDesTranslaterTrigger" />-->
+
+				<!--回答描述信息翻译任务-->
+				<!--<ref bean="importAllQuestion2Solr" />-->
 			</list>
 
 		</property>
